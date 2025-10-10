@@ -18,7 +18,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_sim_time',
-            default_value='false',
+            default_value='false', # Gazabo等のシミュレーション時間の有無
             description='Use simulation time if true'),
 
         DeclareLaunchArgument(
@@ -33,11 +33,11 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             'publish_period_sec',
-            default_value='1.0',
+            default_value='1.0', # 地図の更新周期
             description='OccupancyGrid publishing period'),
 
         Node(
-            package='rviz2',
+            package='rviz2', # rviz起動
             executable='rviz2',
             name='rviz2',
             arguments=['-d', rviz_config_file],
@@ -48,21 +48,21 @@ def generate_launch_description():
             package='tf2_ros',
             executable='static_transform_publisher',
             output='screen',
-            arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'map', 'odom_rf2o']
+            arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'map', 'odom_rf2o'] # 地図座標とオドメトリの座標変換
         ),
 
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
             output='screen',
-            arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'odom_rf2o', 'base_footprint']
+            arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'odom_rf2o', 'base_footprint'] # オドメトリとロボットの規定座標
         ),
 
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
             output='screen',
-            arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'base_link', 'laser']
+            arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'base_link', 'laser'] # ロボットとlidarセンサの座標変換
         ),
 
         Node(
