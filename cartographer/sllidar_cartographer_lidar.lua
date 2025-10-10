@@ -4,24 +4,24 @@ include "trajectory_builder.lua"
 options = {
   map_builder = MAP_BUILDER,
   trajectory_builder = TRAJECTORY_BUILDER,
-  map_frame = "map", /*地図の座標系*/
-  tracking_frame = "laser", /*センサの座標系*/
-  published_frame = "laser", /*SLAM出力の座標系*/
-  odom_frame = "odom_rf2o", /*オドメトリの座標系*/
-  provide_odom_frame = false, /*cartographerよりodomフレームを提供するか*/
+  map_frame = "map", --地図の座標系
+  tracking_frame = "base_link", --センサの座標系
+  published_frame = "base_link", --SLAM出力の座標系
+  odom_frame = "odom", --オドメトリの座標系
+  provide_odom_frame = true, --cartographerよりodomフレームを提供するか
   publish_frame_projected_to_2d = false,
-  use_odometry = false, /*オドメトリを使うか*/
-  use_nav_sat = false, /*GNSSを使うか*/
-  use_landmarks = false, /*ランドマークを使うか*/
-  use_imu_data = false, /*IMUを使うか*/
-  num_laser_scans = 1, /*使用するレーザースキャンの数*/
-  num_multi_echo_laser_scans = 0, /*使用するポイントクラウドの数*/
+  use_odometry = false, --オドメトリを使うか
+  use_nav_sat = false, --GNSSを使うか
+  use_landmarks = false, --ランドマークを使うか
+ 
+  num_laser_scans = 1, --使用するレーザースキャンの数
+  num_multi_echo_laser_scans = 0, --使用するポイントクラウドの数
   num_subdivisions_per_laser_scan = 1,
   num_point_clouds = 0,
   lookup_transform_timeout_sec = 0.2,
-  submap_publish_period_sec = 0.05, /*サブマップの公開周期*/
-  pose_publish_period_sec = 5e-3, /*ロボットの姿勢の公開周期*/
-  trajectory_publish_period_sec = 30e-3, /*軌跡の公開周期*/
+  submap_publish_period_sec = 0.05, --サブマップの公開周期
+  pose_publish_period_sec = 5e-3, --ロボットの姿勢の公開周期
+  trajectory_publish_period_sec = 30e-3, --軌跡の公開周期
   rangefinder_sampling_ratio = 1.,
   odometry_sampling_ratio = 1.,
   fixed_frame_pose_sampling_ratio = 1.,
@@ -29,12 +29,12 @@ options = {
   landmarks_sampling_ratio = 1.,
 }
 
-MAP_BUILDER.use_trajectory_builder_2d = true
+MAP_BUILDER.use_trajectory_builder_2d = true 
 
 TRAJECTORY_BUILDER_2D.min_range = 0.
 TRAJECTORY_BUILDER_2D.max_range = 10.
 TRAJECTORY_BUILDER_2D.missing_data_ray_length = 5.
-TRAJECTORY_BUILDER_2D.use_imu_data = false
+TRAJECTORY_BUILDER_2D.use_imu_data = false -- imuを使うか
 TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = true
 
 POSE_GRAPH.constraint_builder.min_score = 0.55
