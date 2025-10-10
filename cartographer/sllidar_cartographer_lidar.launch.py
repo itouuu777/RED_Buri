@@ -43,7 +43,7 @@ def generate_launch_description():
             arguments=['-d', rviz_config_file],
             output='screen'
         ),
-
+"""
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
@@ -57,7 +57,7 @@ def generate_launch_description():
             output='screen',
             arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'odom_rf2o', 'base_footprint'] # オドメトリとロボットの規定座標
         ),
-
+"""
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
@@ -70,18 +70,16 @@ def generate_launch_description():
             executable='cartographer_node',
             name='cartographer_node',
             output='screen',
+            parameters=[{'use_sim_time': use_sim_time}],
             arguments=[
                 '-configuration_directory', '/home/ryoma/RP_ws/src/sllidar_ros2/lua',
                 '-configuration_basename', 'sllidar_cartographer.lua'
             ],
-            remappings=[('odom', 'odom_rf2o')]
+            #remappings=[('odom', 'odom_rf2o')]
         ),
 
         Node(
             package='cartographer_ros',
-            #executable='cartographer_node',
-            #name='cartographer_node',
-            #output='log',
             executable='cartographer_occupancy_grid_node',
             name='occupancy_grid_node',
             output='screen',
@@ -90,6 +88,33 @@ def generate_launch_description():
                 '-configuration_directory', '/home/ryoma/RP_ws/src/sllidar_ros2/lua',
                 '-configuration_basename', 'sllidar_cartographer.lua'
             ],
-            remappings=[('odom', 'odom_rf2o')]
+            #remappings=[('odom', 'odom_rf2o')]
         ),
+
+        nav2_launch = IncludeLaunchDescription(
+        launch_description_source=PythonLaunchDescriptionSource([
+            get_package_share_directory('nav2_bringup'),
+            '/launch/navigation_launch.py'
+        ]),
+        launch_arguments={
+                'use_sim_time': 'False',
+                'params_file': '/home/ryoma/nav2_config/nav2_params.yaml'
+        }.items()
+        )
+        rviz2_config = os.path.join(
+            get_package_share_directory('bringup'),
+            'rviz',
+            'config.rviz'
+        )
+
+        rviz2_node = Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            output='screen',
+            arguments=[["-d"], [rviz2_config]],
+            remappings=[('/move_base_simple/goal','/goal_pose')] #目標位置姿勢を示すTopic
+        )
+
+
     ])
