@@ -28,7 +28,7 @@ def generate_launch_description():
     }.items()
     )
     rviz2_config = os.path.join(
-        get_package_share_directory('nav2_bringup'),
+        get_package_share_directory('sllidar_ros2'),
         'rviz',
         'config.rviz'
     )
@@ -63,13 +63,13 @@ def generate_launch_description():
             default_value='1.0', # 地図の更新周期
             description='OccupancyGrid publishing period'),
 
-        Node(
-            package='rviz2', # rviz起動
-            executable='rviz2',
-            name='rviz2',
-            arguments=['-d', rviz_config_file],
-            output='screen'
-        ),
+        #Node(
+        #    package='rviz2', # rviz起動
+        #    executable='rviz2',
+        #    name='rviz2',
+        #    arguments=['-d', rviz_config_file],
+        #    output='screen'
+        #),
 
         Node(
             package='tf2_ros',
