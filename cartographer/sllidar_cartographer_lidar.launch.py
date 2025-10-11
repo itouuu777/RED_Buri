@@ -16,7 +16,7 @@ def generate_launch_description():
 
     share_dir = get_package_share_directory('sllidar_ros2')
     rviz_config_file = os.path.join(share_dir, 'rviz', 'sllidar_cartographer.rviz')
-
+    pbstream_path = "/home/ryoma/mapp/map.pbstream"
     nav2_launch = IncludeLaunchDescription(
     launch_description_source=PythonLaunchDescriptionSource([
         get_package_share_directory('nav2_bringup'),
@@ -86,7 +86,8 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}],
             arguments=[
                 '-configuration_directory', '/home/ryoma/RP_ws/src/sllidar_ros2/lua',
-                '-configuration_basename', 'sllidar_cartographer.lua'
+                '-configuration_basename', 'sllidar_cartographer.lua',
+                '-load_state_filename', pbstream_path
             ],
             #remappings=[('odom', 'odom_rf2o')]
         ),
