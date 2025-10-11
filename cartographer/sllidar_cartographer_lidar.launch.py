@@ -1,10 +1,12 @@
 import os
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+
 
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
@@ -14,6 +16,31 @@ def generate_launch_description():
 
     share_dir = get_package_share_directory('sllidar_ros2')
     rviz_config_file = os.path.join(share_dir, 'rviz', 'sllidar_cartographer.rviz')
+
+    nav2_launch = IncludeLaunchDescription(
+    launch_description_source=PythonLaunchDescriptionSource([
+        get_package_share_directory('nav2_bringup'),
+        '/launch/navigation_launch.py'
+    ]),
+    launch_arguments={
+            'use_sim_time': 'False',
+            'params_file': '/home/ryoma/nav2_config/nav2_params.yaml'
+    }.items()
+    )
+    rviz2_config = os.path.join(
+        get_package_share_directory('nav2_bringup'),
+        'rviz',
+        'config.rviz'
+    )
+
+    rviz2_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output='screen',
+        arguments=["-d", rviz2_config],
+        remappings=[('/move_base_simple/goal','/goal_pose')] #目標位置姿勢を示すTopic
+    )
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -43,21 +70,7 @@ def generate_launch_description():
             arguments=['-d', rviz_config_file],
             output='screen'
         ),
-"""
-        Node(
-            package='tf2_ros',
-            executable='static_transform_publisher',
-            output='screen',
-            arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'map', 'odom_rf2o'] # 地図座標とオドメトリの座標変換
-        ),
 
-        Node(
-            package='tf2_ros',
-            executable='static_transform_publisher',
-            output='screen',
-            arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'odom_rf2o', 'base_footprint'] # オドメトリとロボットの規定座標
-        ),
-"""
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
@@ -91,30 +104,10 @@ def generate_launch_description():
             #remappings=[('odom', 'odom_rf2o')]
         ),
 
-        nav2_launch = IncludeLaunchDescription(
-        launch_description_source=PythonLaunchDescriptionSource([
-            get_package_share_directory('nav2_bringup'),
-            '/launch/navigation_launch.py'
-        ]),
-        launch_arguments={
-                'use_sim_time': 'False',
-                'params_file': '/home/ryoma/nav2_config/nav2_params.yaml'
-        }.items()
-        )
-        rviz2_config = os.path.join(
-            get_package_share_directory('bringup'),
-            'rviz',
-            'config.rviz'
-        )
 
-        rviz2_node = Node(
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            output='screen',
-            arguments=[["-d"], [rviz2_config]],
-            remappings=[('/move_base_simple/goal','/goal_pose')] #目標位置姿勢を示すTopic
-        )
+        nav2_launch,
+        rviz2_node
+
 
 
     ])
