@@ -198,7 +198,7 @@ int main(void)
     if (startPos != -1) {
         // 2. 目標位置を計算 (startPos から +30度)
         // 341ステップ = 約30度
-        int targetPosition = startPos - 1251.25; // 4095 * 目標角度 / 360 (-アームが閉まる方向、+アームが開く方向）
+        int targetPosition = startPos + 1139;
 
         // 0-4095の範囲を超えないようにガード
         if (targetPosition > 4095) targetPosition = 4095;
