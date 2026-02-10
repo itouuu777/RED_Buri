@@ -174,14 +174,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
   /* USER CODE BEGIN 2 */
-    HAL_Delay(500); // サーボの安定待ち
+    HAL_Delay(50); // サーボの安定待ち
 
     // 起動時の現在位置を取得して基準にする
     //int16_t startPos = -1;
-    for(int i=0; i<20; i++) { // 10回リトライ
+    for(int i=0; i<100; i++) { // 10回リトライ
         startPos = STS3215_GetPosition(servoID);
         if(startPos != -1) break;
-        HAL_Delay(10);
+        HAL_Delay(5);
     }
 
     if (startPos != -1) {
@@ -198,7 +198,7 @@ int main(void)
     if (startPos != -1) {
         // 2. 目標位置を計算 (startPos から +30度)
         // 341ステップ = 約30度
-        int targetPosition = startPos + 1139;
+        int targetPosition = startPos + 313;
 
         // 0-4095の範囲を超えないようにガード
         if (targetPosition > 4095) targetPosition = 4095;
