@@ -22,7 +22,6 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include <stdio.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -145,6 +144,16 @@ int16_t STS3215_GetPosition(uint8_t id) {
 }
 
 
+static inline int16_t deg_to_ticks(float deg) {
+    // 4096/360 = 11.377... 1ステップ≈0.08789°
+    float ticks = deg * (4096.0f / 360.0f);
+    int32_t it = (int32_t)lroundf(ticks); // <math.h>
+    if (it < -4096) it = -4096; // 念のため過大防止
+    if (it >  4096) it =  4096;
+    return (int16_t)it;
+}
+
+
 
 /* USER CODE END PFP */
 
@@ -186,10 +195,11 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
- HAL_Delay(50); // サーボの安定待ち
+  HAL_Delay(50); // サーボの安定待ち
 
     // 起動時の現在位置を取得して基準にする
     //int16_t startPos = -1;
+    
     for(int i=0; i<100; i++) { // 10回リトライ
         startPos = STS3215_GetPosition(servoID);
         if(startPos != -1) break;
@@ -209,7 +219,8 @@ int main(void)
 
      if (startPos != -1) {
         // 2. 目標位置を計算 (startPos から +30度)
-        int targetPosition = startPos + 1039;
+        int16_t designate = deg_to_ticks(110.0f);
+        int targetPosition = startPos - designate; //マイナスが閉まる方向
 
         // 0-4095の範囲を超えないようにガード
         if (targetPosition > 4095) targetPosition = 4095;
