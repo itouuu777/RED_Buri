@@ -10,8 +10,7 @@ public:
     int16_t getPosition();
 
     int16_t AdjustPosition();
-    void moveRelative(int16_t offset);
-    void setAngle(float deg);
+    void moveRelative(int16_t targetAngle);
 
 private:
     UART_HandleTypeDef* _huart;
