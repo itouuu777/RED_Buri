@@ -76,11 +76,12 @@ void STS3215::moveRelative(int16_t targetAngle) {
     if (target > 4095) target = 4095;
     if (target < 0) target = 0;
     setPosition((uint16_t)target);
+
+    _startPos = (uint16_t)target;
 }
 
 int16_t STS3215::deg_to_ticks(float deg) {
     float ticks = deg * (4096.0f / 360.0f);
     return (int16_t)lroundf(ticks);
 }
-
 
